@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  ultra-claw:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ULTRACLAW_CONFIG_PATH=/app/config/ultra-claw.yaml
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - MEMU_API_KEY=${MEMU_API_KEY}
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - ultra-claw-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ultra-claw-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ultraclaw
+      POSTGRES_USER: ultraclaw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ultraclaw}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ultra-claw-network
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  ultra-claw-network:
+    driver: bridge

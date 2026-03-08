@@ -1,0 +1,59 @@
+# Ultra-Claw Configuration Example
+# Copy this file to ultra-claw.yaml and customize for your needs
+
+agent:
+  name: "Ultra-Claw Agent"
+  version: "1.0.0"
+  description: "My personal intelligent agent"
+
+memory:
+  backend: "sqlite"  # Options: sqlite, postgres, pinecone, weaviate
+  database_url: "sqlite:///memory.db"
+  vector_store: "sqlite-vec"
+  embedding_model: "text-embedding-ada-002"
+  embedding_dimensions: 1536
+  max_context_memories: 10
+  similarity_threshold: 0.7
+  cache_enabled: true
+  cache_ttl: 3600
+  categories:
+    - name: "personal"
+      description: "Personal information and preferences"
+    - name: "professional"
+      description: "Work-related knowledge and experiences"
+    - name: "general"
+      description: "General knowledge and facts"
+    - name: "conversation"
+      description: "Conversation history"
+
+llm:
+  provider: "openai"  # Options: openai, anthropic, mock
+  api_key: "${OPENAI_API_KEY}"  # Set via environment variable
+  model: "gpt-4"
+  temperature: 0.7
+  max_tokens: 2000
+  top_p: 1.0
+  frequency_penalty: 0.0
+  presence_penalty: 0.0
+  timeout: 60
+
+workflow:
+  max_steps: 50
+  timeout: 300
+  retry_attempts: 3
+  retry_delay: 1.0
+
+security:
+  encryption_enabled: true
+  access_control_enabled: true
+  audit_logging_enabled: true
+  max_request_size: 10485760  # 10MB
+  rate_limit_requests: 100
+  rate_limit_window: 60
+
+plugins:
+  - name: "memu"
+    enabled: false
+    config:
+      api_base: "http://localhost:8000"
+      api_key: "${MEMU_API_KEY}"
